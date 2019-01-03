@@ -197,8 +197,6 @@ public class TelephoneDirectory {
 		System.out.print("삭제할 대상의 이름 혹은 연락처를 입력하세요 : ");
 		String inputData =  scanner.nextLine();
 		
-		Stream<TelephoneDirectoryDTO> stream = list.stream();
-		
 		list.removeIf(dto -> {
 			
 			if(inputData.trim().equals(dto.getName()) || inputData.trim().equals(dto.getPhone())) {

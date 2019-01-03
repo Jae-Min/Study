@@ -5,6 +5,11 @@ public class TelephoneDirectoryDTO {
 	private String name;
 	private String phone;
 	
+	public TelephoneDirectoryDTO(String name, String phone) {
+		this.name = name;
+		this.phone = phone;
+	}
+	
 	public String getName() {
 		return name;
 	}

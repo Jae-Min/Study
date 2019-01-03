@@ -1,12 +1,15 @@
 package thirdwork;
 
 import java.util.Iterator;
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import secondwork.TelephoneDirectoryDTO;
+import thirdwork.TelephoneDirectoryDTO;
 
 public class TelephoneDirectory {
 	
@@ -119,16 +122,14 @@ public class TelephoneDirectory {
 	// 정보 입력
 	private static void insert() {
 		
-		TelephoneDirectoryDTO dto = new TelephoneDirectoryDTO();
+		
 		
 		System.out.print("이름을 입력하세요 : ");
 		String name = scanner.nextLine();
 		
 		System.out.print("연락처를 입력하세요( - 생략) : ");
 		String phone = scanner.nextLine();
-		
-		dto.setName(name);
-		dto.setPhone(phone);
+		TelephoneDirectoryDTO dto = new TelephoneDirectoryDTO(name, phone);
 		
 		list.add(dto);
 	}
@@ -192,42 +193,30 @@ public class TelephoneDirectory {
 	}
 	
 	// 정보 삭제
-	/*
-	 * 삭제 관련 메소드 또한 stream을 적용하려 했으나,
-	 * List에 저장되어 있는 데이터 삭제 시 iterator를 사용할 경우 에러가 없지만 
-	 * stream을 적용시 list.remove(dto); 이 같은 방식으로 List에 저장된 데이터를 삭제해야 하는데 
-	 * 이 경우 에러가 발생하여 stream을 적용할 수 없었습니다. 
-	 * 
-	 */
 	private static void delete() {
 		System.out.print("삭제할 대상의 이름 혹은 연락처를 입력하세요 : ");
 		String inputData =  scanner.nextLine();
-		boolean flag = false;
 		
-		Iterator<TelephoneDirectoryDTO> iterator = list.iterator();
-		while(iterator.hasNext()) {
-			TelephoneDirectoryDTO dto = iterator.next();
-			String name = dto.getName();
-			String phone = dto.getPhone();
+		Stream<TelephoneDirectoryDTO> stream = list.stream();
+		
+		list.removeIf(dto -> {
 			
-			if(inputData.trim().equals(name) || inputData.trim().equals(phone)) {
+			if(inputData.trim().equals(dto.getName()) || inputData.trim().equals(dto.getPhone())) {
+				System.out.print("이름 : "+ dto.getName() + " , 연락처 : " + dto.getPhone() + " 정보를 삭제하시겠습니까?(y/n) : ");
+				String inner_flag = scanner.nextLine();
 				
-				System.out.print("이름 : "+ name + " , 연락처 : " + phone + " 정보를 삭제하시겠습니까?(y/n) : ");
-				String innerFlag = scanner.nextLine();
+				if(inner_flag.toLowerCase().trim().equals("y")) {
+					System.out.println(String.format("이름 : %s , 연락처 : %s 의 정보가 삭제되었습니다", dto.getName(), dto.getPhone()));
+					return true;
+				}
 				
-				if(innerFlag.toLowerCase().trim().equals("y")) {
-					System.out.println(String.format("이름 : %s , 연락처 : %s 의 정보가 삭제되었습니다", name, phone));
-					iterator.remove();
-					flag = true;
-					break;
-				} 
-				flag = true;
-			}
-		}
+				return false;
+			} 
+			
+			return false;
+			
+		});
 		
-		if(!flag) {
-			System.out.println("삭제할 대상이 존재하지 않습니다");
-		}
 	}
 
 	public static void main(String[] args) {
